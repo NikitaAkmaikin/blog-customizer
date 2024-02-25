@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { StrictMode, CSSProperties, useState, useRef } from 'react';
+import { StrictMode, CSSProperties, useState } from 'react';
 import clix from 'clsx';
 import './styles/index.scss';
 import styles from './styles/index.module.scss';
@@ -22,68 +22,37 @@ const domNode = document.getElementById('root') as HTMLDivElement;
 const root = createRoot(domNode);
 
 const App = () => {
-	const divRef = useRef<HTMLDivElement>(null);
 	const [sidebar, setSidebar] = useState(defaultArticleState);
+	const [pageState, setPageState] = useState(defaultArticleState);
 
 	const formSubmit = (e: React.MouseEvent) => {
 		e.preventDefault();
 
-		if (divRef.current) {
-			divRef.current.style.setProperty(
-				'--font-family',
-				sidebar.fontFamilyOption.value
-			);
-			divRef.current.style.setProperty(
-				'--font-size',
-				sidebar.fontSizeOption.value
-			);
-			divRef.current.style.setProperty('--font-color', sidebar.fontColor.value);
-			divRef.current.style.setProperty(
-				'--container-width',
-				sidebar.contentWidth.value
-			);
-			divRef.current.style.setProperty(
-				'--bg-color',
-				sidebar.backgroundColor.value
-			);
-		}
+		setPageState({
+			...pageState,
+			fontFamilyOption: sidebar.fontFamilyOption,
+			fontSizeOption: sidebar.fontSizeOption,
+			fontColor: sidebar.fontColor,
+			contentWidth: sidebar.contentWidth,
+			backgroundColor: sidebar.backgroundColor,
+		});
 	};
 
 	const formReset = () => {
 		setSidebar(defaultArticleState);
-
-		if (divRef.current) {
-			divRef.current.style.setProperty(
-				'--font-family',
-				sidebar.fontFamilyOption.value
-			);
-			divRef.current.style.setProperty(
-				'--font-size',
-				sidebar.fontSizeOption.value
-			);
-			divRef.current.style.setProperty('--font-color', sidebar.fontColor.value);
-			divRef.current.style.setProperty(
-				'--container-width',
-				sidebar.contentWidth.value
-			);
-			divRef.current.style.setProperty(
-				'--bg-color',
-				sidebar.backgroundColor.value
-			);
-		}
+		setPageState(defaultArticleState);
 	};
 
 	return (
 		<div
-			ref={divRef}
 			className={clix(styles.main)}
 			style={
 				{
-					'--font-family': defaultArticleState.fontFamilyOption.value,
-					'--font-size': defaultArticleState.fontSizeOption.value,
-					'--font-color': defaultArticleState.fontColor.value,
-					'--container-width': defaultArticleState.contentWidth.value,
-					'--bg-color': defaultArticleState.backgroundColor.value,
+					'--font-family': pageState.fontFamilyOption.value,
+					'--font-size': pageState.fontSizeOption.value,
+					'--font-color': pageState.fontColor.value,
+					'--container-width': pageState.contentWidth.value,
+					'--bg-color': pageState.backgroundColor.value,
 				} as CSSProperties
 			}>
 			<ArticleParamsForm formSubmit={formSubmit} formReset={formReset}>
