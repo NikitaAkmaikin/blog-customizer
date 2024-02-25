@@ -1,11 +1,14 @@
 import { createRoot } from 'react-dom/client';
-import { StrictMode, CSSProperties, useState } from 'react';
+import { StrictMode, CSSProperties, useState, useRef } from 'react';
 import clix from 'clsx';
 import './styles/index.scss';
 import styles from './styles/index.module.scss';
 
 import { Article } from './components/article/Article';
 import { ArticleParamsForm } from './components/article-params-form/ArticleParamsForm';
+import { Select } from './components/select';
+import { RadioGroup } from './components/radio-group';
+import { Separator } from './components/separator';
 import {
 	defaultArticleState,
 	fontFamilyOptions,
@@ -14,18 +17,65 @@ import {
 	contentWidthArr,
 	fontSizeOptions,
 } from './constants/articleProps';
-import { Select } from './components/select';
-import { RadioGroup } from './components/radio-group';
-import { Separator } from './components/separator';
 
 const domNode = document.getElementById('root') as HTMLDivElement;
 const root = createRoot(domNode);
 
 const App = () => {
+	const divRef = useRef<HTMLDivElement>(null);
 	const [sidebar, setSidebar] = useState(defaultArticleState);
+
+	const formSubmit = (e: React.MouseEvent) => {
+		e.preventDefault();
+
+		if (divRef.current) {
+			divRef.current.style.setProperty(
+				'--font-family',
+				sidebar.fontFamilyOption.value
+			);
+			divRef.current.style.setProperty(
+				'--font-size',
+				sidebar.fontSizeOption.value
+			);
+			divRef.current.style.setProperty('--font-color', sidebar.fontColor.value);
+			divRef.current.style.setProperty(
+				'--container-width',
+				sidebar.contentWidth.value
+			);
+			divRef.current.style.setProperty(
+				'--bg-color',
+				sidebar.backgroundColor.value
+			);
+		}
+	};
+
+	const formReset = () => {
+		setSidebar(defaultArticleState);
+
+		if (divRef.current) {
+			divRef.current.style.setProperty(
+				'--font-family',
+				sidebar.fontFamilyOption.value
+			);
+			divRef.current.style.setProperty(
+				'--font-size',
+				sidebar.fontSizeOption.value
+			);
+			divRef.current.style.setProperty('--font-color', sidebar.fontColor.value);
+			divRef.current.style.setProperty(
+				'--container-width',
+				sidebar.contentWidth.value
+			);
+			divRef.current.style.setProperty(
+				'--bg-color',
+				sidebar.backgroundColor.value
+			);
+		}
+	};
 
 	return (
 		<div
+			ref={divRef}
 			className={clix(styles.main)}
 			style={
 				{
@@ -36,7 +86,7 @@ const App = () => {
 					'--bg-color': defaultArticleState.backgroundColor.value,
 				} as CSSProperties
 			}>
-			<ArticleParamsForm>
+			<ArticleParamsForm formSubmit={formSubmit} formReset={formReset}>
 				<Select
 					selected={sidebar.fontFamilyOption}
 					onChange={(option) =>

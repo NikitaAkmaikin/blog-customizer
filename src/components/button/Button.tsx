@@ -1,5 +1,4 @@
 import { Text } from 'components/text';
-
 import styles from './Button.module.scss';
 
 export const Button = ({
@@ -8,7 +7,7 @@ export const Button = ({
 	type,
 }: {
 	title: string;
-	onClick?: () => void;
+	onClick?: (e: React.MouseEvent) => void;
 	type?: React.ButtonHTMLAttributes<HTMLButtonElement>['type'];
 }) => {
 	return (

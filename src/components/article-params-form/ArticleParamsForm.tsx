@@ -6,9 +6,15 @@ import { Text } from '../text';
 
 type TArticleParamsForm = {
 	children: ReactNode;
+	formSubmit: (e: React.MouseEvent) => void;
+	formReset: () => void;
 };
 
-export const ArticleParamsForm = ({ children }: TArticleParamsForm) => {
+export const ArticleParamsForm = ({
+	children,
+	formSubmit,
+	formReset,
+}: TArticleParamsForm) => {
 	// Открытие/Закрытие боковой панели
 	const containerOpenRef = useRef<HTMLElement | null>(null);
 	const [isValid, setIsValid] = useState(false);
@@ -26,15 +32,15 @@ export const ArticleParamsForm = ({ children }: TArticleParamsForm) => {
 			<ArrowButton isValid={isValid} toggle={buttonToggle} />
 			<aside className={styles.container} ref={containerOpenRef}>
 				<form className={styles.form}>
-					<Text as='h2' size={31} weight={800} uppercase dynamicLite>
+					<Text as='h2' size={31} weight={800} uppercase>
 						<p style={{ color: '#000' }}>задайте параметры</p>
 					</Text>
 
 					{children}
 
 					<div className={styles.bottomContainer}>
-						<Button title='Сбросить' type='reset' />
-						<Button title='Применить' type='submit' />
+						<Button title='Сбросить' type='reset' onClick={formReset} />
+						<Button title='Применить' type='submit' onClick={formSubmit} />
 					</div>
 				</form>
 			</aside>
