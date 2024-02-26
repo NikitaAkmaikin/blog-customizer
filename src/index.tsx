@@ -67,6 +67,7 @@ const App = () => {
 					options={fontFamilyOptions}
 					title={'шрифт'}
 				/>
+
 				<RadioGroup
 					selected={sidebar.fontSizeOption}
 					onChange={(option) =>
@@ -79,6 +80,7 @@ const App = () => {
 					title={'размер шрифта'}
 					name={'размер шрифта'}
 				/>
+
 				<Select
 					selected={sidebar.fontColor}
 					onChange={(option) =>
@@ -90,9 +92,9 @@ const App = () => {
 					options={fontColors}
 					title={'цвет шрифта'}
 				/>
-				Separator
+
 				<Separator />
-				Separator
+
 				<Select
 					selected={sidebar.backgroundColor}
 					onChange={(option) =>
@@ -104,6 +106,7 @@ const App = () => {
 					options={backgroundColors}
 					title={'цвет фона'}
 				/>
+
 				<Select
 					selected={sidebar.contentWidth}
 					onChange={(option) =>
