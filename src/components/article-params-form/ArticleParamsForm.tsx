@@ -1,46 +1,119 @@
+import { useState, FormEvent } from 'react';
+import clsx from 'clsx';
+import styles from './ArticleParamsForm.module.scss';
+
 import { ArrowButton } from 'components/arrow-button';
 import { Button } from 'components/button';
-import styles from './ArticleParamsForm.module.scss';
-import { useState, useEffect, useRef, ReactNode } from 'react';
 import { Text } from '../text';
+import { Select } from '../select';
+import { RadioGroup } from '../radio-group';
+import { Separator } from './../separator';
+import {
+	fontFamilyOptions,
+	fontColors,
+	backgroundColors,
+	contentWidthArr,
+	fontSizeOptions,
+} from 'src/constants/articleProps';
 
 type TArticleParamsForm = {
-	children: ReactNode;
-	formSubmit: (e: React.MouseEvent) => void;
-	formReset: () => void;
+	setSidebar: any;
+	sidebar: any;
+	SubmitForm: (e: FormEvent<HTMLFormElement>) => void;
+	ResetForm: () => void;
 };
 
 export const ArticleParamsForm = ({
-	children,
-	formSubmit,
-	formReset,
+	setSidebar,
+	sidebar,
+	SubmitForm,
+	ResetForm,
 }: TArticleParamsForm) => {
-	// Открытие/Закрытие боковой панели
-	const containerOpenRef = useRef<HTMLElement | null>(null);
-	const [isValid, setIsValid] = useState(false);
+	const [isOpen, setIsOpen] = useState(false);
 
-	const buttonToggle = () => {
-		return setIsValid(!isValid);
+	const ToggleForm = () => {
+		return setIsOpen(!isOpen);
 	};
-
-	useEffect(() => {
-		containerOpenRef.current?.classList.toggle(styles.container_open);
-	}, [isValid]);
 
 	return (
 		<>
-			<ArrowButton isValid={isValid} toggle={buttonToggle} />
-			<aside className={styles.container} ref={containerOpenRef}>
-				<form className={styles.form}>
+			<ArrowButton isOpen={isOpen} toggleForm={ToggleForm} />
+
+			<aside
+				className={clsx(styles.container, {
+					[styles.container_open]: isOpen,
+				})}>
+				<form className={styles.form} onSubmit={SubmitForm}>
 					<Text as='h2' size={31} weight={800} uppercase>
-						<p style={{ color: '#000' }}>задайте параметры</p>
+						<p>задайте параметры</p>
 					</Text>
 
-					{children}
+					<Select
+						selected={sidebar.fontFamilyOption}
+						onChange={(option) =>
+							setSidebar({
+								...sidebar,
+								fontFamilyOption: option,
+							})
+						}
+						options={fontFamilyOptions}
+						title={'шрифт'}
+					/>
+
+					<RadioGroup
+						selected={sidebar.fontSizeOption}
+						onChange={(option) =>
+							setSidebar({
+								...sidebar,
+								fontSizeOption: option,
+							})
+						}
+						options={fontSizeOptions}
+						title={'размер шрифта'}
+						name={'размер шрифта'}
+					/>
+
+					<Select
+						selected={sidebar.fontColor}
+						onChange={(option) =>
+							setSidebar({
+								...sidebar,
+								fontColor: option,
+							})
+						}
+						options={fontColors}
+						title={'цвет шрифта'}
+					/>
+
+					<Separator />
+
+					<Select
+						selected={sidebar.backgroundColor}
+						onChange={(option) =>
+							setSidebar({
+								...sidebar,
+								backgroundColor: option,
+							})
+						}
+						options={backgroundColors}
+						title={'цвет фона'}
+					/>
+
+					<Select
+						selected={sidebar.contentWidth}
+						onChange={(option) =>
+							setSidebar({
+								...sidebar,
+								contentWidth: option,
+							})
+						}
+						options={contentWidthArr}
+						title={'ширина контента'}
+					/>
 
 					<div className={styles.bottomContainer}>
-						<Button title='Сбросить' type='reset' onClick={formReset} />
-						<Button title='Применить' type='submit' onClick={formSubmit} />
+						<Button title='Сбросить' type='reset' onClick={ResetForm} />
+						<Button title='Применить' type='submit' />
 					</div>
 				</form>
 			</aside>
