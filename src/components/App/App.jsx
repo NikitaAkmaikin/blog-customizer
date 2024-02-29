@@ -10,7 +10,7 @@ export const App = () => {
 	const [pageState, setPageState] = useState(defaultArticleState);
 	const [sidebar, setSidebar] = useState(defaultArticleState);
 
-	const SubmitForm = (e) => {
+	const submitForm = (e) => {
 		e.preventDefault();
 
 		setPageState({
@@ -23,7 +23,7 @@ export const App = () => {
 		});
 	};
 
-	const ResetForm = () => {
+	const resetForm = () => {
 		setSidebar(defaultArticleState);
 		setPageState(defaultArticleState);
 	};
@@ -41,8 +41,8 @@ export const App = () => {
 			<ArticleParamsForm
 				sidebar={sidebar}
 				setSidebar={setSidebar}
-				SubmitForm={SubmitForm}
-				ResetForm={ResetForm}
+				submitForm={submitForm}
+				resetForm={resetForm}
 			/>
 
 			<Article />

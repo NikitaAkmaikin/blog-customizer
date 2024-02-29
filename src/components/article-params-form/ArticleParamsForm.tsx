@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import styles from './ArticleParamsForm.module.scss';
 
@@ -19,31 +19,72 @@ import {
 type TArticleParamsForm = {
 	setSidebar: any;
 	sidebar: any;
-	SubmitForm: (e: FormEvent<HTMLFormElement>) => void;
-	ResetForm: () => void;
+	submitForm: (e: FormEvent<HTMLFormElement>) => void;
+	resetForm: () => void;
 };
 
 export const ArticleParamsForm = ({
 	setSidebar,
 	sidebar,
-	SubmitForm,
-	ResetForm,
+	submitForm,
+	resetForm,
 }: TArticleParamsForm) => {
+	// Состояние боковой панели
 	const [isOpen, setIsOpen] = useState(false);
 
-	const ToggleForm = () => {
+	// Изменения состояния боковой панели
+	const toggleForm = () => {
 		return setIsOpen(!isOpen);
 	};
 
+	const rootRef = useRef<HTMLFormElement | null>(null);
+
+	// Закрытие боковой панели при клику по оверлею и нажатие на кнопку "Esc"
+	const useClose = () => {
+		useEffect(() => {
+			if (!isOpen) return; // останавливаем действие эффекта, если закрыто
+
+			function handleClickOutside(event: MouseEvent) {
+				const { target } = event;
+				const isOutsideClick =
+					target instanceof Node && // проверяем, что это `DOM`-элемент
+					rootRef.current &&
+					!rootRef.current.contains(target); // проверяем, что кликнули на элемент, который находится не внутри нашего блока
+				if (isOutsideClick) {
+					toggleForm();
+				}
+			}
+
+			const handleEscape = (e: KeyboardEvent) => {
+				if (e.key === 'Escape') {
+					toggleForm();
+				}
+			};
+
+			document.addEventListener('keydown', handleEscape);
+			document.addEventListener('mousedown', handleClickOutside);
+
+			//  обязательно удаляем обработчики в `clean-up`- функции
+			return () => {
+				document.removeEventListener('keydown', handleEscape);
+				document.removeEventListener('mousedown', handleClickOutside);
+			};
+		}, [isOpen]);
+	};
+
+	useClose();
+
 	return (
 		<>
-			<ArrowButton isOpen={isOpen} toggleForm={ToggleForm} />
+			<ArrowButton isOpen={isOpen} toggleForm={toggleForm} />
 
 			<aside
+				// visible={console.log('ff')}
+				// dismiss={this.hideModal}
 				className={clsx(styles.container, {
 					[styles.container_open]: isOpen,
 				})}>
-				<form className={styles.form} onSubmit={SubmitForm}>
+				<form className={styles.form} onSubmit={submitForm} ref={rootRef}>
 					<Text as='h2' size={31} weight={800} uppercase>
 						<p>задайте параметры</p>
 					</Text>
@@ -112,7 +153,7 @@ export const ArticleParamsForm = ({
 					/>
 
 					<div className={styles.bottomContainer}>
-						<Button title='Сбросить' type='reset' onClick={ResetForm} />
+						<Button title='Сбросить' type='reset' onClick={resetForm} />
 						<Button title='Применить' type='submit' />
 					</div>
 				</form>
